@@ -7,9 +7,10 @@ const app = express();
 
 // Create 
 app.post('/users', async(req, res) => {
-    const { id_organization, username, password, fullname, email, picture } = req.body;
+    const { id_organization, id_role, username, password, fullname, email, picture } = req.body;
     const values = {
         id_organization,
+        id_role,
         username,
         password,
         fullname,
@@ -78,9 +79,10 @@ app.get('/users/:id', async(req, res) => {
 app.put('/users/:id', async(req, res) => {
 
     const { id } = req.params;
-    const { id_organization, username, password, fullname, email, picture } = req.body;
+    const { id_organization, id_role, username, password, fullname, email, picture } = req.body;
     const values = {
         id_organization,
+        id_role,
         username,
         password,
         fullname,
