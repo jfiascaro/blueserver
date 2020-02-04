@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const bcrypt = require('bcryptjs');
 const pool = require('../config/database');
 
 const app = express();
@@ -7,12 +8,11 @@ const app = express();
 
 // Create 
 app.post('/users', async(req, res) => {
-    const { id_organization, id_role, username, password, fullname, email, picture } = req.body;
+    const { id_organization, id_role, password, fullname, email, picture } = req.body;
     const values = {
         id_organization,
         id_role,
-        username,
-        password,
+        password: bcrypt.hashSync(password, 10),
         fullname,
         email,
         picture
@@ -25,6 +25,7 @@ app.post('/users', async(req, res) => {
             });
         } else {
             values.id = users.insertId;
+            delete values.password;
             res.json({
                 ok: true,
                 users: values
@@ -79,11 +80,10 @@ app.get('/users/:id', async(req, res) => {
 app.put('/users/:id', async(req, res) => {
 
     const { id } = req.params;
-    const { id_organization, id_role, username, password, fullname, email, picture } = req.body;
+    const { id_organization, id_role, password, fullname, email, picture } = req.body;
     const values = {
         id_organization,
         id_role,
-        username,
         password,
         fullname,
         email,

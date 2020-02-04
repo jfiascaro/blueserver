@@ -19,10 +19,12 @@ ALTER TABLE organizations
 // Users
 CREATE TABLE users (
   id INT(11) NOT NULL,
-  id_organizations INT(11) NOT NULL,
-  username VARCHAR(16) NOT NULL,
-  password VARCHAR(60) NOT NULL,
-  fullname VARCHAR(100) NOT NULL
+  id_organization INT(11) NOT NULL,
+  id_role INT(11) NOT NULL,
+  email VARCHAR(50) NOT NULL,
+  password VARCHAR(50) NOT NULL,
+  fullname VARCHAR(100) NOT NULL,
+  picture VARCHAR(50)
 );
 
 ALTER TABLE users
