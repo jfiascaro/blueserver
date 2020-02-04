@@ -1,8 +1,8 @@
 create database blueserver;
 
-// Organizations
+--Organizations
 create table organizations (
-    id INT(11) NOT NULL,
+    id_organization INT(11) NOT NULL,
     name VARCHAR(50) NOT NULL,
     email VARCHAR(50) NOT NULL,
     url VARCHAR(100),
@@ -10,15 +10,15 @@ create table organizations (
 );
 
 ALTER TABLE organizations
-  ADD PRIMARY KEY (id);
+  ADD PRIMARY KEY (id_organization);
 
 ALTER TABLE organizations
-  MODIFY id INT(11) NOT NULL AUTO_INCREMENT;
+  MODIFY id_organization INT(11) NOT NULL AUTO_INCREMENT;
 
 
-// Users
+--Users
 CREATE TABLE users (
-  id INT(11) NOT NULL,
+  id_user INT(11) NOT NULL,
   id_organization INT(11) NOT NULL,
   id_role INT(11) NOT NULL,
   email VARCHAR(50) NOT NULL,
@@ -28,7 +28,7 @@ CREATE TABLE users (
 );
 
 ALTER TABLE users
-  ADD PRIMARY KEY (id);
+  ADD PRIMARY KEY (id_user);
 
 ALTER TABLE users
-  MODIFY id INT(11) NOT NULL AUTO_INCREMENT;
+  MODIFY id_user INT(11) NOT NULL AUTO_INCREMENT;

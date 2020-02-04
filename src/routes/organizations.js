@@ -20,7 +20,7 @@ app.post('/organizations', async(req, res) => {
                 error: err
             });
         } else {
-            values.id = organizations.insertId;
+            values.id_organization = organizations.insertId;
             res.json({
                 ok: true,
                 organizations: values
@@ -91,7 +91,7 @@ app.put('/organizations/:id', async(req, res) => {
                 error: err
             });
         } else {
-            values.id = id;
+            values.id_organization = id;
             res.json({
                 ok: true,
                 organizations: values

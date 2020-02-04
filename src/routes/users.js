@@ -24,7 +24,7 @@ app.post('/users', async(req, res) => {
                 error: err
             });
         } else {
-            values.id = users.insertId;
+            values.id_user = users.insertId;
             delete values.password;
             res.json({
                 ok: true,
@@ -98,7 +98,7 @@ app.put('/users/:id', async(req, res) => {
                 error: err
             });
         } else {
-            values.id = id;
+            values.id_user = id;
             res.json({
                 ok: true,
                 users: values
