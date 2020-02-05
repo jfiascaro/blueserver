@@ -1,20 +1,23 @@
 const express = require('express');
-const bcrypt = require('bcryptjs');
+const path = require('path');
 const pool = require('../config/database');
-const { authToken } = require('../middlewares/authentication');
 
 const app = express();
 
-
 // Create 
-app.post('/users', async(req, res) => {
-    const { id_person, email, password } = req.body;
+app.post('/people', async(req, res) => {
+    const { id_organization, name, lastname, phone, email, address, photo, birthday } = req.body;
     const values = {
-        id_person,
+        id_organization,
+        name,
+        lastname,
+        phone,
         email,
-        password: bcrypt.hashSync(password, 10)
+        address,
+        photo,
+        birthday
     };
-    await pool.query('INSERT INTO users set ?', [values], (err, resDB) => {
+    await pool.query('INSERT INTO people set ?', [values], (err, resDB) => {
         if (err) {
             return res.status(400).json({
                 ok: false,
@@ -22,19 +25,18 @@ app.post('/users', async(req, res) => {
             });
         } else {
             values.id = resDB.insertId;
-            delete values.password;
             return res.json({
                 ok: true,
-                users: values
+                people: values
             });
-        };
+        }
     });
 
 });
 
 // Read
-app.get('/users/list', async(req, res) => {
-    await pool.query('SELECT * FROM users', (err, resDB) => {
+app.get('/people/list', async(req, res) => {
+    await pool.query('SELECT * FROM people', (err, resDB) => {
         if (err) {
             return res.status(400).json({
                 ok: false,
@@ -49,10 +51,9 @@ app.get('/users/list', async(req, res) => {
                 mensaje: "No hay registros"
             });
         } else {
-            //delete users.password;
-            return res.json({
+            res.json({
                 ok: true,
-                users: resDB
+                people: resDB
             })
         };
 
@@ -61,9 +62,9 @@ app.get('/users/list', async(req, res) => {
 });
 
 // Read by id
-app.get('/users/:id', async(req, res) => {
+app.get('/people/:id', async(req, res) => {
     const { id } = req.params;
-    await pool.query('SELECT * FROM users WHERE id = ?', [id], (err, resDB) => {
+    await pool.query('SELECT * FROM people WHERE id = ?', [id], (err, resDB) => {
 
         if (err) {
             return res.status(400).json({
@@ -78,10 +79,9 @@ app.get('/users/:id', async(req, res) => {
                 mensaje: "No hay registros"
             });
         } else {
-            delete resDB[0].password
             return res.json({
                 ok: true,
-                users: resDB[0]
+                people: resDB[0]
             });
         }
     });
@@ -90,17 +90,22 @@ app.get('/users/:id', async(req, res) => {
 });
 
 // Update by id
-app.put('/users/:id', async(req, res) => {
+app.put('/people/:id', async(req, res) => {
 
     const { id } = req.params;
-    const { id_person, email, password } = req.body;
+    const { id_organization, name, lastname, phone, email, address, photo, birthday } = req.body;
     const values = {
-        id_person,
+        id_organization,
+        name,
+        lastname,
+        phone,
         email,
-        password: bcrypt.hashSync(password, 10)
+        address,
+        photo,
+        birthday
     };
 
-    await pool.query('UPDATE users set ? WHERE id = ?', [values, id], (err, resDB) => {
+    await pool.query('UPDATE people set ? WHERE id = ?', [values, id], (err, resDB) => {
 
         if (err) {
             return res.status(400).json({
@@ -116,19 +121,18 @@ app.put('/users/:id', async(req, res) => {
             });
         } else {
             values.id = id;
-            delete values.password;
             return res.json({
                 ok: true,
-                users: values
+                people: values
             });
         }
     })
 });
 
 // Delete by id
-app.delete('/users/:id', async(req, res) => {
+app.delete('/people/:id', async(req, res) => {
     const { id } = req.params;
-    await pool.query('DELETE FROM users WHERE id = ?', [id], (err, resDB) => {
+    await pool.query('DELETE FROM people WHERE id = ?', [id], (err, resDB) => {
         if (err) {
             return res.status(400).json({
                 ok: false,
@@ -151,10 +155,10 @@ app.delete('/users/:id', async(req, res) => {
 });
 
 // Search by id
-app.get('/users/search/:term', async(req, res) => {
+app.get('/people/search/:term', async(req, res) => {
     const { term } = req.params;
     termino = '%' + term + '%'
-    await pool.query('SELECT * FROM users WHERE email LIKE ?', [termino], (err, resDB) => {
+    await pool.query('SELECT * FROM people WHERE name LIKE ?', [termino], (err, resDB) => {
 
         if (err) {
             return res.status(400).json({
@@ -171,7 +175,7 @@ app.get('/users/search/:term', async(req, res) => {
         } else {
             return res.json({
                 ok: true,
-                users: resDB
+                people: resDB
             });
         }
     });
@@ -179,16 +183,16 @@ app.get('/users/search/:term', async(req, res) => {
 
 });
 
-app.get('/users', async(req, res) => {
+app.get('/people', async(req, res) => {
 
 
     res.json({
-        create: 'post: users',
-        read: 'get: users/list',
-        readbyid: 'get: users/:id',
-        update: 'put: users/:id',
-        delete: 'delete: users/:id',
-        search: 'get: users/search/:term'
+        create: 'post: people',
+        read: 'get: people/list',
+        readbyid: 'get: people/:id',
+        update: 'put: people/:id',
+        delete: 'delete: people/:id',
+        search: 'get: people/search/:term'
     })
 })
 

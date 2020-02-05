@@ -1,20 +1,17 @@
 const express = require('express');
-const bcrypt = require('bcryptjs');
+const path = require('path');
 const pool = require('../config/database');
-const { authToken } = require('../middlewares/authentication');
 
 const app = express();
 
-
 // Create 
-app.post('/users', async(req, res) => {
-    const { id_person, email, password } = req.body;
+app.post('/areas', async(req, res) => {
+    const { id_organization, name } = req.body;
     const values = {
-        id_person,
-        email,
-        password: bcrypt.hashSync(password, 10)
+        id_organization,
+        name
     };
-    await pool.query('INSERT INTO users set ?', [values], (err, resDB) => {
+    await pool.query('INSERT INTO areas set ?', [values], (err, resDB) => {
         if (err) {
             return res.status(400).json({
                 ok: false,
@@ -22,19 +19,18 @@ app.post('/users', async(req, res) => {
             });
         } else {
             values.id = resDB.insertId;
-            delete values.password;
             return res.json({
                 ok: true,
-                users: values
+                areas: values
             });
-        };
+        }
     });
 
 });
 
 // Read
-app.get('/users/list', async(req, res) => {
-    await pool.query('SELECT * FROM users', (err, resDB) => {
+app.get('/areas/list', async(req, res) => {
+    await pool.query('SELECT * FROM areas', (err, resDB) => {
         if (err) {
             return res.status(400).json({
                 ok: false,
@@ -49,10 +45,9 @@ app.get('/users/list', async(req, res) => {
                 mensaje: "No hay registros"
             });
         } else {
-            //delete users.password;
-            return res.json({
+            res.json({
                 ok: true,
-                users: resDB
+                areas: resDB
             })
         };
 
@@ -61,9 +56,9 @@ app.get('/users/list', async(req, res) => {
 });
 
 // Read by id
-app.get('/users/:id', async(req, res) => {
+app.get('/areas/:id', async(req, res) => {
     const { id } = req.params;
-    await pool.query('SELECT * FROM users WHERE id = ?', [id], (err, resDB) => {
+    await pool.query('SELECT * FROM areas WHERE id = ?', [id], (err, resDB) => {
 
         if (err) {
             return res.status(400).json({
@@ -78,10 +73,9 @@ app.get('/users/:id', async(req, res) => {
                 mensaje: "No hay registros"
             });
         } else {
-            delete resDB[0].password
             return res.json({
                 ok: true,
-                users: resDB[0]
+                areas: resDB[0]
             });
         }
     });
@@ -90,17 +84,16 @@ app.get('/users/:id', async(req, res) => {
 });
 
 // Update by id
-app.put('/users/:id', async(req, res) => {
+app.put('/areas/:id', async(req, res) => {
 
     const { id } = req.params;
-    const { id_person, email, password } = req.body;
+    const { id_organization, name } = req.body;
     const values = {
-        id_person,
-        email,
-        password: bcrypt.hashSync(password, 10)
+        id_organization,
+        name
     };
 
-    await pool.query('UPDATE users set ? WHERE id = ?', [values, id], (err, resDB) => {
+    await pool.query('UPDATE areas set ? WHERE id = ?', [values, id], (err, resDB) => {
 
         if (err) {
             return res.status(400).json({
@@ -116,19 +109,18 @@ app.put('/users/:id', async(req, res) => {
             });
         } else {
             values.id = id;
-            delete values.password;
             return res.json({
                 ok: true,
-                users: values
+                areas: values
             });
         }
     })
 });
 
 // Delete by id
-app.delete('/users/:id', async(req, res) => {
+app.delete('/areas/:id', async(req, res) => {
     const { id } = req.params;
-    await pool.query('DELETE FROM users WHERE id = ?', [id], (err, resDB) => {
+    await pool.query('DELETE FROM areas WHERE id = ?', [id], (err, resDB) => {
         if (err) {
             return res.status(400).json({
                 ok: false,
@@ -151,10 +143,10 @@ app.delete('/users/:id', async(req, res) => {
 });
 
 // Search by id
-app.get('/users/search/:term', async(req, res) => {
+app.get('/areas/search/:term', async(req, res) => {
     const { term } = req.params;
     termino = '%' + term + '%'
-    await pool.query('SELECT * FROM users WHERE email LIKE ?', [termino], (err, resDB) => {
+    await pool.query('SELECT * FROM areas WHERE name LIKE ?', [termino], (err, resDB) => {
 
         if (err) {
             return res.status(400).json({
@@ -171,7 +163,7 @@ app.get('/users/search/:term', async(req, res) => {
         } else {
             return res.json({
                 ok: true,
-                users: resDB
+                areas: resDB
             });
         }
     });
@@ -179,16 +171,16 @@ app.get('/users/search/:term', async(req, res) => {
 
 });
 
-app.get('/users', async(req, res) => {
+app.get('/areas', async(req, res) => {
 
 
     res.json({
-        create: 'post: users',
-        read: 'get: users/list',
-        readbyid: 'get: users/:id',
-        update: 'put: users/:id',
-        delete: 'delete: users/:id',
-        search: 'get: users/search/:term'
+        create: 'post: areas',
+        read: 'get: areas/list',
+        readbyid: 'get: areas/:id',
+        update: 'put: areas/:id',
+        delete: 'delete: areas/:id',
+        search: 'get: areas/search/:term'
     })
 })
 

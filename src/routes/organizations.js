@@ -13,15 +13,15 @@ app.post('/organizations', async(req, res) => {
         url,
         logo
     };
-    await pool.query('INSERT INTO organizations set ?', [values], (err, organizations) => {
+    await pool.query('INSERT INTO organizations set ?', [values], (err, resDB) => {
         if (err) {
-            res.status(400).json({
+            return res.status(400).json({
                 ok: false,
                 error: err
             });
         } else {
-            values.id_organization = organizations.insertId;
-            res.json({
+            values.id = resDB.insertId;
+            return res.json({
                 ok: true,
                 organizations: values
             });
@@ -32,18 +32,25 @@ app.post('/organizations', async(req, res) => {
 
 // Read
 app.get('/organizations/list', async(req, res) => {
-    await pool.query('SELECT * FROM organizations', (err, organizations) => {
+    await pool.query('SELECT * FROM organizations', (err, resDB) => {
         if (err) {
-            res.status(400).json({
+            return res.status(400).json({
                 ok: false,
                 error: err
             });
 
-        } else {
-            res.json({
+        };
+
+        if (resDB.length == 0) {
+            return res.status(404).json({
                 ok: true,
-                organizations: organizations
-            })
+                mensaje: "No hay registros"
+            });
+        } else {
+            return res.json({
+                ok: true,
+                organizations: resDB
+            });
         };
 
     });
@@ -53,19 +60,28 @@ app.get('/organizations/list', async(req, res) => {
 // Read by id
 app.get('/organizations/:id', async(req, res) => {
     const { id } = req.params;
-    await pool.query('SELECT * FROM organizations WHERE id = ?', [id], (err, organizations) => {
+    await pool.query('SELECT * FROM organizations WHERE id = ?', [id], (err, resDB) => {
 
         if (err) {
-            res.status(400).json({
+            return res.status(400).json({
                 ok: false,
                 error: err
             });
-        } else {
-            res.json({
+        };
+
+        if (resDB.length == 0) {
+            return res.status(404).json({
                 ok: true,
-                organizations: organizations[0]
+                mensaje: "No hay registros"
             });
-        }
+        } else {
+            return res.json({
+                ok: true,
+                organizations: resDB[0]
+            });
+        };
+
+
     });
 
 
@@ -83,16 +99,23 @@ app.put('/organizations/:id', async(req, res) => {
         logo
     };
 
-    await pool.query('UPDATE organizations set ? WHERE id = ?', [values, id], (err, organizations) => {
+    await pool.query('UPDATE organizations set ? WHERE id = ?', [values, id], (err, resDB) => {
 
         if (err) {
-            res.status(400).json({
+            return res.status(400).json({
                 ok: false,
                 error: err
             });
+        };
+
+        if (resDB.affectedRows == 0) {
+            return res.status(404).json({
+                ok: true,
+                mensaje: "No hay registros"
+            });
         } else {
-            values.id_organization = id;
-            res.json({
+            values.id = id;
+            return res.json({
                 ok: true,
                 organizations: values
             });
@@ -103,16 +126,24 @@ app.put('/organizations/:id', async(req, res) => {
 // Delete by id
 app.delete('/organizations/:id', async(req, res) => {
     const { id } = req.params;
-    await pool.query('DELETE FROM organizations WHERE ID = ?', [id], (err, organizations) => {
+    await pool.query('DELETE FROM organizations WHERE id = ?', [id], (err, resDB) => {
         if (err) {
-            res.status(400).json({
+            return res.status(400).json({
                 ok: false,
                 error: err
             });
-        } else {
-            res.json({
+        };
+
+
+        if (resDB.affectedRows == 0) {
+            return res.status(404).json({
                 ok: true,
-                organizations
+                mensaje: "No hay registros"
+            });
+        } else {
+            return res.json({
+                ok: true,
+                mensaje: "Registro eliminado éxitosamente"
             });
         }
     })
@@ -122,17 +153,25 @@ app.delete('/organizations/:id', async(req, res) => {
 app.get('/organizations/search/:term', async(req, res) => {
     const { term } = req.params;
     termino = '%' + term + '%'
-    await pool.query('SELECT * FROM organizations WHERE name LIKE ?', [termino], (err, organizations) => {
+    await pool.query('SELECT * FROM organizations WHERE name LIKE ?', [termino], (err, resDB) => {
 
         if (err) {
-            res.status(400).json({
+            return res.status(400).json({
                 ok: false,
                 error: err
             });
-        } else {
-            res.json({
+        };
+
+
+        if (resDB.length == 0) {
+            return res.status(404).json({
                 ok: true,
-                organizations: organizations
+                mensaje: "No hay registros"
+            });
+        } else {
+            return res.json({
+                ok: true,
+                organizations: resDB
             });
         }
     });

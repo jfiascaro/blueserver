@@ -1,34 +1,50 @@
 create database blueserver;
 
+use blueserver;
+
 --Organizations
 create table organizations (
-    id_organization INT(11) NOT NULL,
+    id INT(11) PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(50) NOT NULL,
     email VARCHAR(50) NOT NULL,
     url VARCHAR(100),
     logo VARCHAR(50)
 );
 
-ALTER TABLE organizations
-  ADD PRIMARY KEY (id_organization);
+--People
+CREATE TABLE people (
+  id INT(11) PRIMARY KEY AUTO_INCREMENT,
+  id_organization INT(11) NOT NULL,
+  name VARCHAR(50) NOT NULL,
+  lastname VARCHAR(50) NOT NULL,
+  phone VARCHAR(20),
+  email VARCHAR(50) UNIQUE,
+  address VARCHAR(250),
+  photo VARCHAR(50),
+  birthday TIMESTAMP 
+);
 
-ALTER TABLE organizations
-  MODIFY id_organization INT(11) NOT NULL AUTO_INCREMENT;
+-- Areas
+CREATE TABLE areas (
+  id INT(11) PRIMARY KEY AUTO_INCREMENT,
+  id_organization INT(11) NOT NULL,
+  name VARCHAR(100) NOT NULL
+);
+
+
+-- peopleAreas
+CREATE TABLE peopleAreas (
+  id INT(11) PRIMARY KEY AUTO_INCREMENT,
+  id_area INT(11) NOT NULL,
+  id_person INT(11) NOT NULL,
+  regdate TIMESTAMP 
+);
 
 
 --Users
 CREATE TABLE users (
-  id_user INT(11) NOT NULL,
-  id_organization INT(11) NOT NULL,
-  id_role INT(11) NOT NULL,
-  email VARCHAR(50) NOT NULL,
-  password VARCHAR(50) NOT NULL,
-  fullname VARCHAR(100) NOT NULL,
-  picture VARCHAR(50)
+  id INT(11) PRIMARY KEY AUTO_INCREMENT,
+  id_person INT(11) NOT NULL,
+  email VARCHAR(50) NOT NULL UNIQUE,
+  password VARCHAR(60) NOT NULL
 );
-
-ALTER TABLE users
-  ADD PRIMARY KEY (id_user);
-
-ALTER TABLE users
-  MODIFY id_user INT(11) NOT NULL AUTO_INCREMENT;
