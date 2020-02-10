@@ -1,6 +1,6 @@
 const express = require('express');
-const bcrypt = require('bcryptjs');
 const pool = require('../config/database');
+const bcrypt = require('bcryptjs');
 const { authToken } = require('../middlewares/authentication');
 
 const app = express();

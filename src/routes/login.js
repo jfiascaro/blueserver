@@ -1,7 +1,7 @@
 const express = require('express');
+const pool = require('../config/database');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const pool = require('../config/database');
 
 const app = express();
 
