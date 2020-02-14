@@ -95,12 +95,16 @@ app.put('/users/:id', async(req, res) => {
 
     const { id } = req.params;
     const { id_person, username, email, password } = req.body;
+
     const values = {
         id_person,
         username,
         email,
-        password: bcrypt.hashSync(password, 10)
-    };
+        //password: bcrypt.hashSync(password, 10)
+    }
+    if (!password === undefined) {
+        values.password = bcrypt.hashSync(password, 10);
+    }
 
     await pool.query('UPDATE users set ? WHERE id = ?', [values, id], (err, resDB) => {
 
