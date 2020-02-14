@@ -45,6 +45,10 @@ CREATE TABLE peopleAreas (
 CREATE TABLE users (
   id INT(11) PRIMARY KEY AUTO_INCREMENT,
   id_person INT(11) NOT NULL,
-  email VARCHAR(50) NOT NULL UNIQUE,
+  username VARCHAR(50) NOT NULL DEFAULT '', 
+  email VARCHAR(50) NOT NULL,
   password VARCHAR(60) NOT NULL
 );
+
+ALTER TABLE users
+  ADD CONSTRAINT uq_users UNIQUE(id_person, email);

@@ -8,9 +8,10 @@ const app = express();
 
 // Create 
 app.post('/users', async(req, res) => {
-    const { id_person, email, password } = req.body;
+    const { id_person, username, email, password } = req.body;
     const values = {
         id_person,
+        username,
         email,
         password: bcrypt.hashSync(password, 10)
     };
@@ -93,9 +94,10 @@ app.get('/users/:id', async(req, res) => {
 app.put('/users/:id', async(req, res) => {
 
     const { id } = req.params;
-    const { id_person, email, password } = req.body;
+    const { id_person, username, email, password } = req.body;
     const values = {
         id_person,
+        username,
         email,
         password: bcrypt.hashSync(password, 10)
     };

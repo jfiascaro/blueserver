@@ -55,10 +55,15 @@ app.post('/login', async(req, res) => {
     });
 
 
+})
 
 
+app.get('/login', async(req, res) => {
 
 
+    res.json({
+        login: 'post: login',
+    })
 })
 
 module.exports = app;
